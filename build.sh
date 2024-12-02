@@ -1,5 +1,7 @@
 #!/bin/bash
+
+PARENT="$(pwd)"
 cd spa
 yarn build
 cd dist 
-cp -r * ../../public
+cp -r * "$PARENT/public"

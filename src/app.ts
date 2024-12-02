@@ -30,6 +30,7 @@ class Application {
   private initRoutes(): void {
     this.app.use("/api", api);
     this.app.use(express.static(path.join(Deno.cwd(), "data")));
+    this.app.use(express.static(path.join(Deno.cwd(), "public")));
   }
 
   public listen(): void {
