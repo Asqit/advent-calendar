@@ -1,21 +1,35 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import path from "path";
+import path from "node:path";
 
-// https://vite.dev/config/
-export default defineConfig({
+const defaultConfig = {
   plugins: [react()],
-  server: {
-    proxy: {
-      "/api": {
-        target: "http://localhost:8000",
-        rewrite: (path) => path.replace(/^\/api/, ""),
-      },
-    },
-  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
+};
+
+export default defineConfig(({ command, mode }) => {
+  if (command === "serve") {
+    const isDev = mode === "development";
+    return {
+      ...defaultConfig,
+      server: {
+        proxy: {
+          "/api": {
+            target: isDev
+              ? "http://localhost:8000"
+              : "https://asqit-calendar.deno.dev",
+            rewrite: (path) => path.replace(/^\/api/, ""),
+            changeOrigin: isDev,
+            secure: !isDev,
+          },
+        },
+      },
+    };
+  } else {
+    return defaultConfig;
+  }
 });
