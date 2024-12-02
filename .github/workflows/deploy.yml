@@ -23,14 +23,9 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Build step
-        run: "./build.sh"
-
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
           project: "asqit-calendar"
           entrypoint: "main.ts"
           root: ""
-          
-          
