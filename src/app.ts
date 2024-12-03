@@ -4,14 +4,21 @@ import * as path from "jsr:@std/path";
 import compression from "compression";
 import cors from "cors";
 import { requestLogger } from "./middleware/req-logger.ts";
-import api from "./routes.ts";
+import { Calendar } from "./utils/calendar.ts";
+const kv = await Deno.openKv();
 
 class Application {
   private app: express.Application;
   private readonly PORT: number = 8000;
+  private calendar = new Calendar(kv);
 
   public constructor() {
     this.app = express();
+    this.init();
+  }
+
+  private async init() {
+    await this.calendar.initializeBoxes(23);
     this.initMiddleware();
   }
 
@@ -28,7 +35,45 @@ class Application {
   }
 
   private initRoutes(): void {
-    this.app.use("/api", api);
+    const router = this.app;
+
+    router.get("/api/", (_req, res) => {
+      res.sendStatus(200);
+    });
+
+    router.get("/api/box/", async (_req, res) => {
+      res.status(200).json({ data: await this.calendar.getAllBoxes() });
+    });
+
+    router.get("/api/box/:id", async (req, res) => {
+      res.status(200).json(await this.calendar.getBox(+req.params.id!));
+    });
+
+    router.patch("/api/box/:id", async (req, res) => {
+      const { id } = req.params;
+      const { data } = req.body;
+
+      const ok = await this.calendar.updateBox(+id, data);
+      if (!ok) {
+        res.sendStatus(500);
+        return;
+      }
+
+      res.sendStatus(200);
+    });
+
+    router.put("/api/box/:id", async (req, res) => {
+      const { id } = req.params;
+      const ok = await this.calendar.openBox(+id);
+
+      if (!ok) {
+        res.sendStatus(500);
+        return;
+      }
+
+      res.status(200).json({ data: await this.calendar.getAllBoxes() });
+    });
+
     this.app.use(express.static(path.join(Deno.cwd(), "data")));
     this.app.use(express.static(path.join(Deno.cwd(), "public")));
   }

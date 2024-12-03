@@ -1,8 +1,11 @@
 import type { Box } from "../types.ts";
-const kv = await Deno.openKv();
 
-class Calendar {
-  private db = kv;
+export class Calendar {
+  private db: Deno.Kv;
+
+  public constructor(db: Deno.Kv) {
+    this.db = db;
+  }
 
   /**
    * Načte existující data z Deno KV, pokud existují, nebo vytvoří nové boxy.
@@ -78,8 +81,7 @@ class Calendar {
       return false;
     }
 
-    const today = new Date().toISOString().split("T")[0];
-    if (box.due > today) {
+    if (new Date(box.due) > new Date()) {
       console.error("Ještě není čas otevřít tento box!");
       return false;
     }
@@ -118,7 +120,3 @@ class Calendar {
     return true;
   }
 }
-
-const cal = new Calendar();
-await cal.initializeBoxes(23);
-export default cal;
