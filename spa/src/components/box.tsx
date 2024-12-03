@@ -10,7 +10,7 @@ import {
 import { match } from "ts-pattern";
 import classNames from "classnames";
 import { useMutation } from "@tanstack/react-query";
-import { queryClient } from "@/constants.ts";
+import { queryClient, BASE_URL } from "@/constants.ts";
 
 interface Props {
   data: BoxType;
@@ -18,12 +18,9 @@ interface Props {
 }
 
 async function handleOpen(index: number) {
-  const response = await fetch(
-    `https://asqit-calendar.deno.dev/api/box/${index - 1}`,
-    {
-      method: "PUT",
-    }
-  );
+  const response = await fetch(`${BASE_URL}/api/box/${index - 1}`, {
+    method: "PUT",
+  });
 
   if (!response.ok) throw new Error("failed");
 

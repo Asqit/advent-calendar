@@ -2,9 +2,10 @@ import { Snow } from "./components/snow.tsx";
 import { Box as BoxType } from "./types.ts";
 import { Box } from "./components/box.tsx";
 import { useQuery } from "@tanstack/react-query";
+import { BASE_URL } from "./constants.ts";
 
 async function fetchBoxes() {
-  const response = await fetch("https://asqit-calendar.deno.dev/api/box/");
+  const response = await fetch(`${BASE_URL}/api/box/`);
 
   if (!response.ok) throw new Error("Network Error");
 

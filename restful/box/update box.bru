@@ -1,0 +1,26 @@
+meta {
+  name: update box
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost:8000/api/box/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 1
+}
+
+body:json {
+  {
+    "data": {
+      "isOpen": false,
+      "due": "2024-12-01T23:00:00.000Z",
+      "content": "hello",
+      "type": "text"
+    }
+  }
+}

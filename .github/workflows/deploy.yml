@@ -27,5 +27,5 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "asqit-calendar"
-          run: "deno task dev"
+          entrypoint: "main.ts"
           root: ""
