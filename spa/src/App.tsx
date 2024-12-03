@@ -4,7 +4,7 @@ import { Box } from "./components/box.tsx";
 import { useQuery } from "@tanstack/react-query";
 
 async function fetchBoxes() {
-  const response = await fetch("http://asqit-calendar.deno.dev/api/box/");
+  const response = await fetch("https://asqit-calendar.deno.dev/api/box/");
 
   if (!response.ok) throw new Error("Network Error");
 

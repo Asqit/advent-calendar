@@ -19,7 +19,7 @@ interface Props {
 
 async function handleOpen(index: number) {
   const response = await fetch(
-    `http://asqit-calendar.deno.dev/api/box/${index - 1}`,
+    `https://asqit-calendar.deno.dev/api/box/${index - 1}`,
     {
       method: "PUT",
     }
