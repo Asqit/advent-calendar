@@ -11,11 +11,32 @@ import { match } from "ts-pattern";
 import classNames from "classnames";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient, BASE_URL } from "@/constants.ts";
+import {
+  CloudSnowIcon as Snow,
+  Gift,
+  TreesIcon as Tree,
+  Candy,
+  Bell,
+  Star,
+  Coffee,
+  Music,
+} from "lucide-react";
 
 interface Props {
   data: BoxType;
   index: number;
 }
+
+const icons = [
+  <Tree />,
+  <Gift />,
+  <Candy />,
+  <Bell />,
+  <Star />,
+  <Coffee />,
+  <Music />,
+  <Snow />,
+];
 
 async function handleOpen(index: number) {
   const response = await fetch(`${BASE_URL}/api/box/${index - 1}`, {
@@ -36,6 +57,7 @@ export function Box({ data, index }: Props) {
     },
   });
 
+  const Icon = icons[Math.floor(Math.random() * icons.length)];
   const { due, content, type, isOpen } = data;
   const date = new Date(due);
 
@@ -51,15 +73,18 @@ export function Box({ data, index }: Props) {
           className={classNames(
             "h-24 flex flex-col items-center justify-center cursor-pointer transition-all duration-300",
             isOpen ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600",
-            date > new Date() ? "opacity-50" : ""
+            date > new Date() ? "bg-red-300" : ""
           )}
         >
-          <span className="text-2xl font-bold mb-2">{index}</span>
+          <span className="text-2xl font-bold mb-2">
+            {index} {Icon}
+          </span>
         </Card>
       </DialogTrigger>
       <DialogContent className="bg-green-50 border-2 border-red-500">
         <DialogHeader>
-          <DialogTitle className="text-red-600">
+          <DialogTitle className="text-red-600 flex items-center gap-2">
+            {Icon}
             Den {new Date(due).getDay() + 1}
           </DialogTitle>
         </DialogHeader>

@@ -5,22 +5,22 @@ meta {
 }
 
 patch {
-  url: http://localhost:8000/api/box/:id
+  url: https://asqit-calendar.deno.dev/api/box/:id
   body: json
   auth: none
 }
 
 params:path {
-  id: 1
+  id: 3
 }
 
 body:json {
   {
     "data": {
       "isOpen": false,
-      "due": "2024-12-01T23:00:00.000Z",
-      "content": "hello",
-      "type": "text"
+      "due": "2024-12-03",
+      "content": "/images/2024-12-03.jpeg;S tebou jsem opravdu šťastný a myslím si, že je to vidět.",
+      "type": "image"
     }
   }
 }
