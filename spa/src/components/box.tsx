@@ -97,7 +97,7 @@ function Body({ type, content }: BodyProps) {
 
         return (
           <div>
-            <img src={`/api${url}`} />
+            <img src={`${url}`} />
             <p>{caption}</p>
           </div>
         );
