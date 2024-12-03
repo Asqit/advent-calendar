@@ -1,5 +1,5 @@
 import type { Box } from "../types.ts";
-const kv = await Deno.openKv("db");
+const kv = await Deno.openKv();
 
 class Calendar {
   private db = kv;
