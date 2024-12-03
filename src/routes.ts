@@ -8,8 +8,8 @@ router.get("/", (_req, res) => {
   res.sendStatus(200);
 });
 
-router.get("/box/", (_req, res) => {
-  res.status(200).json({ data: calendar.getBoxes() });
+router.get("/box/", async (_req, res) => {
+  res.status(200).json({ data: await calendar.getBoxes() });
 });
 
 router.put("/box/:id", async (req, res) => {
@@ -21,7 +21,7 @@ router.put("/box/:id", async (req, res) => {
     return;
   }
 
-  res.sendStatus(204);
+  res.status(200).json({ data: await calendar.getBoxes() });
 });
 
 export default router;

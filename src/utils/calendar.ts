@@ -51,7 +51,8 @@ class Calendar {
     return false;
   }
 
-  public getBoxes(): Box[] {
+  public async getBoxes(): Promise<Box[]> {
+    await this.loadBoxes();
     return [...this.boxes];
   }
 }

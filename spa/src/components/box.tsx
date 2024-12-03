@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { Box as BoxType } from "../types.ts";
 import { Card } from "./ui/card.tsx";
 import {
@@ -10,32 +9,48 @@ import {
 } from "./ui/dialog.tsx";
 import { match } from "ts-pattern";
 import classNames from "classnames";
+import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/constants.ts";
 
 interface Props {
   data: BoxType;
   index: number;
 }
 
+async function handleOpen(index: number) {
+  const response = await fetch(
+    `http://asqit-calendar.deno.dev/api/box/${index - 1}`,
+    {
+      method: "PUT",
+    }
+  );
+
+  if (!response.ok) throw new Error("failed");
+
+  return await response.json();
+}
+
 export function Box({ data, index }: Props) {
+  const { mutateAsync, isSuccess } = useMutation({
+    mutationFn: handleOpen,
+    onSuccess() {
+      console.log("success!");
+      queryClient.invalidateQueries({ queryKey: ["boxes"] });
+    },
+  });
+
   const { due, content, type, isOpen } = data;
   const date = new Date(due);
-
-  const handleOpen = useCallback(async () => {
-    const response = await fetch(`/api/api/box/${index - 1}`, {
-      method: "PUT",
-    });
-
-    if (!response.ok) return;
-
-    const result = await response.json();
-    console.log(result);
-  }, [index]);
 
   return (
     <Dialog key={+new Date(due)}>
       <DialogTrigger asChild>
         <Card
-          onClick={handleOpen}
+          onClick={async () => {
+            if (!isOpen) {
+              console.log(await mutateAsync(index));
+            }
+          }}
           className={classNames(
             "h-24 flex flex-col items-center justify-center cursor-pointer transition-all duration-300",
             isOpen ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600",
@@ -52,7 +67,7 @@ export function Box({ data, index }: Props) {
           </DialogTitle>
         </DialogHeader>
         <div className="p-4 text-center">
-          {isOpen ? (
+          {isOpen || isSuccess ? (
             <Body type={type} content={content} />
           ) : (
             <div>

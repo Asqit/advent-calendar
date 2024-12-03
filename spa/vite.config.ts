@@ -19,9 +19,7 @@ export default defineConfig(({ command, mode }) => {
       server: {
         proxy: {
           "/api": {
-            target: isDev
-              ? "http://localhost:8000"
-              : "https://asqit-calendar.deno.dev",
+            target: "http://asqit-calendar.deno.dev/",
             rewrite: (path) => path.replace(/^\/api/, ""),
             changeOrigin: isDev,
             secure: !isDev,
@@ -30,6 +28,8 @@ export default defineConfig(({ command, mode }) => {
       },
     };
   } else {
-    return defaultConfig;
+    return {
+      ...defaultConfig,
+    };
   }
 });

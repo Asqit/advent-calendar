@@ -1,20 +1,29 @@
-import { useEffect, useState } from "react";
 import { Snow } from "./components/snow.tsx";
 import { Box as BoxType } from "./types.ts";
 import { Box } from "./components/box.tsx";
+import { useQuery } from "@tanstack/react-query";
+
+async function fetchBoxes() {
+  const response = await fetch("http://asqit-calendar.deno.dev/api/box/");
+
+  if (!response.ok) throw new Error("Network Error");
+
+  return (await response.json())?.data;
+}
 
 export default function App() {
-  const [boxes, setBoxes] = useState<BoxType[]>([]);
+  const { data, isError, isLoading } = useQuery<BoxType[]>({
+    queryFn: fetchBoxes,
+    queryKey: ["boxes"],
+  });
 
-  useEffect(() => {
-    (async () => {
-      const response = await fetch("http://localhost:8000/api/box/");
-      if (!response.ok) return;
+  if (isLoading) {
+    return <>loading...</>;
+  }
 
-      const data = await response.json();
-      setBoxes(data?.data);
-    })();
-  }, []);
+  if (isError) {
+    return <>Error!</>;
+  }
 
   return (
     <div className="w-full min-h-screen relative">
@@ -24,8 +33,8 @@ export default function App() {
           Vánoční Adventní Kalendář
         </h1>
         <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
-          {boxes.map((box, i) => (
-            <Box data={box} index={i + 1} />
+          {data?.map((box, i) => (
+            <Box key={+new Date(box.due)} data={box} index={i + 1} />
           ))}
         </div>
       </div>
