@@ -20,6 +20,7 @@ import {
   Star,
   Coffee,
   Music,
+  Loader,
 } from "lucide-react";
 
 interface Props {
@@ -49,7 +50,7 @@ async function handleOpen(index: number) {
 }
 
 export function Box({ data, index }: Props) {
-  const { mutateAsync, isSuccess } = useMutation({
+  const { mutateAsync, isPending, isSuccess } = useMutation({
     mutationFn: handleOpen,
     onSuccess() {
       console.log("success!");
@@ -60,6 +61,14 @@ export function Box({ data, index }: Props) {
   const Icon = icons[Math.floor(Math.random() * icons.length)];
   const { due, content, type, isOpen } = data;
   const date = new Date(due);
+
+  if (isPending) {
+    return (
+      <div className="w-full h-full rounded-lg bg-white text-black text-5xl flex items-center justify-center">
+        <Loader className="animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <Dialog key={+new Date(due)}>
@@ -73,7 +82,7 @@ export function Box({ data, index }: Props) {
           className={classNames(
             "h-24 flex flex-col items-center justify-center cursor-pointer transition-all duration-300",
             isOpen ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600",
-            date > new Date() ? "bg-red-300" : ""
+            date > new Date() ? "bg-red-300" : "",
           )}
         >
           <span className="text-2xl font-bold mb-2">

@@ -3,6 +3,7 @@ import { Box as BoxType } from "./types.ts";
 import { Box } from "./components/box.tsx";
 import { useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "./constants.ts";
+import { Loader } from "lucide-react";
 
 async function fetchBoxes() {
   const response = await fetch(`${BASE_URL}/api/box/`);
@@ -18,12 +19,16 @@ export default function App() {
     queryKey: ["boxes"],
   });
 
-  if (isLoading) {
-    return <>loading...</>;
-  }
-
   if (isError) {
     return <>Error!</>;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-screen p-8 flex items-center justify-center text-6xl">
+        <Loader className="animate-spin" />
+      </div>
+    );
   }
 
   return (
@@ -33,11 +38,13 @@ export default function App() {
         <h1 className="text-5xl md:text-7xl font-bold text-red-500 drop-shadow-lg mb-8">
           Vánoční Adventní Kalendář
         </h1>
+
         <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
           {data?.map((box, i) => (
             <Box key={+new Date(box.due)} data={box} index={i + 1} />
           ))}
         </div>
+
         <p className="text-white my-4">
           S láskou největší mému lásínkovi, Ondřej ❤️
         </p>
