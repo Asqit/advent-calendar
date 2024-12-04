@@ -131,7 +131,7 @@ class Cloud {
 
   public update(dt: number) {
     this.x += this.speed * dt;
-    if (this.x + this.size * 2 < 0) this.x = innerWidth;
+    if (this.x + this.size * 3 < 0) this.x = innerWidth;
     if (this.x > innerWidth) this.x = 0;
   }
 }

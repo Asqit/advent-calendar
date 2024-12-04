@@ -44,8 +44,6 @@ async function handleOpen(index: number) {
     method: "PUT",
   });
 
-  if (!response.ok) throw new Error("failed");
-
   return await response.json();
 }
 

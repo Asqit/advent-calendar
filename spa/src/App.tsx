@@ -7,9 +7,6 @@ import { Loader } from "lucide-react";
 
 async function fetchBoxes() {
   const response = await fetch(`${BASE_URL}/api/box/`);
-
-  if (!response.ok) throw new Error("Network Error");
-
   return (await response.json())?.data;
 }
 
@@ -35,7 +32,7 @@ export default function App() {
     <div className="w-full min-h-screen relative">
       <Snow />
       <div className="container mx-auto max-w-screen-lg pt-16 flex flex-col justify-center p-4">
-        <h1 className="text-5xl md:text-7xl font-bold text-red-500 drop-shadow-lg mb-8">
+        <h1 className="text-4xl md:text-7xl font-bold text-red-500 drop-shadow-lg mb-8">
           Vánoční Adventní Kalendář
         </h1>
 

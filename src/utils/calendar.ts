@@ -7,10 +7,6 @@ export class Calendar {
     this.db = db;
   }
 
-  /**
-   * Načte existující data z Deno KV, pokud existují, nebo vytvoří nové boxy.
-   * @param count Počet boxů, které mají být v případě potřeby vytvořeny.
-   */
   public async initializeBoxes(count: number): Promise<void> {
     const existingCount = (await this.db.get<number>(["boxesCount"])).value;
 
@@ -38,20 +34,11 @@ export class Calendar {
     console.log("Boxy byly úspěšně inicializovány!");
   }
 
-  /**
-   * Získá konkrétní box podle indexu.
-   * @param index Index boxu.
-   * @returns Box nebo null, pokud neexistuje.
-   */
   public async getBox(index: number): Promise<Box | null> {
     const box = (await this.db.get<Box>(["box", index])).value;
     return box || null;
   }
 
-  /**
-   * Získá všechny boxy jako pole.
-   * @returns Pole všech boxů.
-   */
   public async getAllBoxes(): Promise<Box[]> {
     const count = (await this.db.get<number>(["boxesCount"])).value;
     if (count === null) {
@@ -68,11 +55,6 @@ export class Calendar {
     return boxes;
   }
 
-  /**
-   * Otevře konkrétní box, pokud je to povolené.
-   * @param index Index boxu.
-   * @returns True, pokud byl box úspěšně otevřen, jinak False.
-   */
   public async openBox(index: number): Promise<boolean> {
     const box = await this.getBox(index);
 
@@ -97,12 +79,6 @@ export class Calendar {
     }
   }
 
-  /**
-   * Upraví obsah konkrétního boxu.
-   * @param index Index boxu.
-   * @param updatedBox Nová data pro box.
-   * @returns True, pokud byla úprava úspěšná, jinak False.
-   */
   public async updateBox(
     index: number,
     updatedBox: Partial<Box>
