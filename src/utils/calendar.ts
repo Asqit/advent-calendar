@@ -1,4 +1,4 @@
-import type { Box } from "../types.ts";
+import type { Box } from "../constants.ts";
 
 export class Calendar {
   private db: Deno.Kv;
@@ -40,14 +40,8 @@ export class Calendar {
   }
 
   public async getAllBoxes(): Promise<Box[]> {
-    const count = (await this.db.get<number>(["boxesCount"])).value;
-    if (count === null) {
-      console.warn("Nebyly nalezeny žádné boxy.");
-      return [];
-    }
-
     const boxes: Box[] = [];
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < 23; i++) {
       const box = (await this.db.get<Box>(["box", i])).value;
       if (box) boxes.push(box);
     }

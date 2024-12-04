@@ -4,20 +4,25 @@ import { Box } from "./components/box.tsx";
 import { useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "./constants.ts";
 import { Loader } from "lucide-react";
+import { useLocalStorage } from "usehooks-ts";
+import { Auth } from "./components/auth.tsx";
 
-async function fetchBoxes() {
-  const response = await fetch(`${BASE_URL}/api/box/`);
+async function fetchBoxes(token: string) {
+  const response = await fetch(`${BASE_URL}/api/box/`, {
+    headers: { authorization: `Bearer ${token}` },
+  });
   return (await response.json())?.data;
 }
 
 export default function App() {
+  const [auth, setAuth] = useLocalStorage("auth", "");
   const { data, isError, isLoading } = useQuery<BoxType[]>({
-    queryFn: fetchBoxes,
+    queryFn: () => fetchBoxes(auth),
     queryKey: ["boxes"],
   });
 
-  if (isError) {
-    return <>Error!</>;
+  if (!auth || isError) {
+    return <Auth setToken={(t) => setAuth(t)} />;
   }
 
   if (isLoading) {

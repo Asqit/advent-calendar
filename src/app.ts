@@ -3,8 +3,14 @@ import express from "express";
 import * as path from "jsr:@std/path";
 import compression from "compression";
 import cors from "cors";
+
+// @deno-types="npm:@types/jsonwebtoken"
+import jwt from "npm:jsonwebtoken";
+
 import { requestLogger } from "./middleware/req-logger.ts";
+import { authorize } from "./middleware/authorize.ts";
 import { Calendar } from "./utils/calendar.ts";
+import { AUTH_TOKEN_SECRET } from "./constants.ts";
 const kv = await Deno.openKv();
 
 class Application {
@@ -41,11 +47,28 @@ class Application {
       res.sendStatus(200);
     });
 
-    router.get("/api/box/", async (_req, res) => {
+    router.post("/auth", (req, res) => {
+      const { validDate } = req.body;
+
+      if (!validDate) {
+        res.sendStatus(400);
+        return;
+      }
+
+      if (new Date(validDate).getTime() !== new Date("2024-12-05").getTime()) {
+        res.sendStatus(401);
+        return;
+      }
+
+      const token = jwt.sign({ validDate }, AUTH_TOKEN_SECRET);
+      res.status(201).json({ token });
+    });
+
+    router.get("/api/box/", authorize, async (_req, res) => {
       res.status(200).json({ data: await this.calendar.getAllBoxes() });
     });
 
-    router.get("/api/box/:id", async (req, res) => {
+    router.get("/api/box/:id", authorize, async (req, res) => {
       res.status(200).json(await this.calendar.getBox(+req.params.id!));
     });
 
@@ -62,7 +85,7 @@ class Application {
       res.sendStatus(200);
     });
 
-    router.put("/api/box/:id", async (req, res) => {
+    router.put("/api/box/:id", authorize, async (req, res) => {
       const { id } = req.params;
       const ok = await this.calendar.openBox(+id);
 

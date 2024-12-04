@@ -22,6 +22,7 @@ import {
   Music,
   Loader,
 } from "lucide-react";
+import { useReadLocalStorage } from "usehooks-ts";
 
 interface Props {
   data: BoxType;
@@ -39,8 +40,11 @@ const icons = [
   <Snow />,
 ];
 
-async function handleOpen(index: number) {
+async function handleOpen(index: number, token: string) {
   const response = await fetch(`${BASE_URL}/api/box/${index - 1}`, {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
     method: "PUT",
   });
 
@@ -48,8 +52,9 @@ async function handleOpen(index: number) {
 }
 
 export function Box({ data, index }: Props) {
+  const token = useReadLocalStorage("auth");
   const { mutateAsync, isPending, isSuccess } = useMutation({
-    mutationFn: handleOpen,
+    mutationFn: () => handleOpen(index, token as string),
     onSuccess() {
       console.log("success!");
       queryClient.invalidateQueries({ queryKey: ["boxes"] });
@@ -60,21 +65,13 @@ export function Box({ data, index }: Props) {
   const { due, content, type, isOpen } = data;
   const date = new Date(due);
 
-  if (isPending) {
-    return (
-      <div className="w-full h-full rounded-lg bg-white text-black text-5xl flex items-center justify-center">
-        <Loader className="animate-spin" />
-      </div>
-    );
-  }
-
   return (
     <Dialog key={+new Date(due)}>
       <DialogTrigger asChild>
         <Card
           onClick={async () => {
             if (!isOpen) {
-              console.log(await mutateAsync(index));
+              await mutateAsync();
             }
           }}
           className={classNames(
@@ -96,7 +93,11 @@ export function Box({ data, index }: Props) {
           </DialogTitle>
         </DialogHeader>
         <div className="p-4 text-center">
-          {isOpen || isSuccess ? (
+          {isPending ? (
+            <div className="w-full h-full flex items-center justify-center">
+              <Loader className="animate-spin" />
+            </div>
+          ) : isOpen || isSuccess ? (
             <Body type={type} content={content} />
           ) : (
             <div>
