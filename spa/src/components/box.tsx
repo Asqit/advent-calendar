@@ -85,14 +85,14 @@ export function Box({ data, index }: Props) {
           </span>
         </Card>
       </DialogTrigger>
-      <DialogContent className="bg-green-50 border-2 border-red-500">
+      <DialogContent className="bg-green-50 border-2 border-red-500 max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-red-600 flex items-center gap-2">
             {Icon}
             Den {new Date(due).getDay() + 1}
           </DialogTitle>
         </DialogHeader>
-        <div className="p-4 text-center">
+        <div className="p-4 text-center overflow-auto">
           {isPending ? (
             <div className="w-full h-full flex items-center justify-center">
               <Loader className="animate-spin" />
@@ -127,8 +127,8 @@ function Body({ type, content }: BodyProps) {
 
         return (
           <div>
-            <img src={`${url}`} />
-            <p>{caption}</p>
+            <img src={`/api${url}`} />
+            <p className="my-2">{caption}</p>
           </div>
         );
       }
