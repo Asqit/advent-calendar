@@ -7,6 +7,26 @@ export class Calendar {
     this.db = db;
   }
 
+  public async addBox(box: Partial<Box>): Promise<boolean> {
+    const count = (await this.db.get<number>(["boxesCount"])).value || 0;
+
+    const newBox: Box = {
+      isOpen: false,
+      due: box.due!,
+      content: box.content || `Box ${count + 1}`,
+      type: box.type || "text",
+    };
+
+    await this.db
+      .atomic()
+      .set(["box", count], newBox)
+      .set(["boxesCount"], count + 1)
+      .commit();
+
+    console.log(`Nový box ${count + 1} byl úspěšně vytvořen.`);
+    return true;
+  }
+
   public async initializeBoxes(count: number): Promise<void> {
     const existingCount = (await this.db.get<number>(["boxesCount"])).value;
 
@@ -40,8 +60,10 @@ export class Calendar {
   }
 
   public async getAllBoxes(): Promise<Box[]> {
+    const count = (await this.db.get<number>(["boxesCount"])).value;
     const boxes: Box[] = [];
-    for (let i = 0; i < 23; i++) {
+
+    for (let i = 0; i <= count!; i++) {
       const box = (await this.db.get<Box>(["box", i])).value;
       if (box) boxes.push(box);
     }

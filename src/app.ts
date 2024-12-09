@@ -43,6 +43,12 @@ class Application {
   private initRoutes(): void {
     const router = this.app;
 
+    router.post("/api/box", async (req, res) => {
+      const newBox = await this.calendar.addBox({ ...req.body });
+      if (!newBox) res.sendStatus(500);
+      res.sendStatus(201);
+    });
+
     router.get("/api/", (_req, res) => {
       res.sendStatus(200);
     });
