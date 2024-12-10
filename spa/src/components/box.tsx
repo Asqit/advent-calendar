@@ -135,6 +135,17 @@ function Body({ type, content }: BodyProps) {
 
       return <img src={content} />;
     })
-    .with("audio", () => <audio src={content} />)
+    .with("audio", () => {
+      const bits = content.split(";");
+      const url = bits[0].trim();
+      const caption = bits[1];
+
+      return (
+        <div>
+          <audio src={url} />
+          <p className="my-2">{caption}</p>
+        </div>
+      );
+    })
     .exhaustive();
 }
