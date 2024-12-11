@@ -142,7 +142,7 @@ function Body({ type, content }: BodyProps) {
 
       return (
         <div>
-          <audio src={url} />
+          <audio src={url} controls />
           <p className="my-2">{caption}</p>
         </div>
       );

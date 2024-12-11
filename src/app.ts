@@ -110,10 +110,10 @@ class Application {
   public listen(): void {
     this.app.listen(this.PORT, () => {
       console.log(`
-+---------------------------------------+
-|  Success! The service is available
-|  http://localhost:${this.PORT}
-+---------------------------------------+
+      \r--------------------------------------------------------------
+      \r Good news, everyone: 
+      \r The REST API is now available at http://localhost:${this.PORT}
+      \r--------------------------------------------------------------
       `);
     });
   }
